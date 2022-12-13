@@ -225,16 +225,43 @@ onMounted(() => {
 
 
 var i  = 0;
-var indeksSekarang = 2;
+var indeksSekarangGenap = 2;
+var indeksSekarangGanjil = 1;
 const AddLine = () => {
 
   if(route.params.id === "IN"){
-    // DataGanjil = JSON.parse(localStorage.getiItem("DataGanjil"));
-    WorkNo.value = "Data Ganjil"
-  }else{
+    
+    DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
+    var shift = JSON.parse(localStorage.getItem("shift"));
+    
+    DataGanjil.forEach(element => {
+      if(Type.value == "IN"){
+        DataGanjil[i].Line = "A"
+        localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+      }else if(Type.value == "EX"){
+        DataGanjil[i].Line = "B"
+        localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+      }else if(Type.value == "HI"){
+        DataGanjil[i].Line = "C"
+        localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+      }else if(Type.value == "HX"){
+        DataGanjil[i].Line = "D"
+        localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+      }
+
+      DataGanjil[i].status = true;
+      DataGanjil[i].Shift = shift;
+      localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+    
+      if(Number(element.Increment) == indeksSekarangGanjil){
+        WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+      }
+    });
+
+  }else if(route.params.id === "EX"){
     DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
     var shift = JSON.parse(localStorage.getItem("shift"));
-    // console.log(DataGenap);
+    
     DataGenap.forEach(element => {
       if(Type.value == "IN"){
         DataGenap[i].Line = "A"
@@ -250,18 +277,11 @@ const AddLine = () => {
         localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
       }
 
-      // if(shift == "R"){
-        // DataGenap[i].Shift = "RED"
-      //   localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
-      // }else {
-      //   DataGenap[i].Shift = "WHITE"
-      //   localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
-      // }
-
-      DataGenap[i].Status = true;
+      DataGenap[i].status = true;
+      DataGenap[i].Shift = shift;
       localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
     
-      if(Number(element.Increment) == indeksSekarang){
+      if(Number(element.Increment) == indeksSekarangGenap){
         WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
       }
     });
@@ -269,16 +289,49 @@ const AddLine = () => {
 }
 
 const next = () => {
-  indeksSekarang += 2;
+  indeksSekarangGenap += 2;
   i += 1;
+  var shift = JSON.parse(localStorage.getItem("shift"));
 
-  DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
+  if(route.params.id === "IN"){
+    // DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
+    // DataGanjil.forEach(element => {
+    //   DataGanjil[i].Line = DataGenap[i-1].Line;
+    // })
 
-  DataGenap.forEach(element => {
-    if(Number(element.Increment) == indeksSekarang){
-        WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
-      }
-  })
+  }else {
+    DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
+
+    if(shift === "R"){
+      shift = "RED";
+    }else{
+      shift = "WHITE";
+    }
+
+    DataWork.DataList.push({
+      No: No.value,
+      WorkNo: WorkNo.value,
+      PartCode: PartCode.value,
+      Type: Type.value,
+      Line: DataGenap[i].Line,
+      Date: getDate,
+      Time: Time.value,
+      Shift: shift
+    })
+    localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+
+    DataGenap.forEach(element => {
+      if(Number(element.Increment) == indeksSekarangGenap){
+          DataGenap[i].Line = DataGenap[i-1].Line;
+          DataGenap[i].Shift = DataGenap[i-1].Shift;
+          DataGenap[i].status = true;
+          localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+          WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+        }
+    })
+
+    
+  }
 
 }
 
