@@ -197,7 +197,7 @@ const route = useRoute();
 // Variable Untuk Insert Data LocalStorage
 let No = ref(0);
 let WorkNo = ref();
-let Type = ref(route.params.id);
+let Type = ref();
 let PartCode = ref("CA");
 let Line = ref("A");
 let date = ref();
@@ -210,6 +210,7 @@ let GenerateData = reactive({
 })
 
 var DataGanjil = []
+var DataGenap = []
 // Ngambil Data Dari LocalStorage
 onMounted(() => {
   DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
@@ -223,23 +224,49 @@ onMounted(() => {
 });
 
 
+var i  = 0;
+var indeksSekarang = 2;
 const AddLine = () => {
-  const DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
-  // localStorage.setItem("DataGenerate.list", JSON.stringify(GenerateData.list))
-  console.log(DataGanjil[0]);
-  DataGanjil.forEach(element => {
-    // GenerateData.list[0] = DataGanjil[0];
-    // const shift = JSON.parse(localStorage.getItem("shift"));
 
-    // DataGanjil[0].Line = "B";
-    // DataGanjil[0].Shift = shift;
-    // localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
-    // console.log("Berhasil");
+  if(route.params.id === "IN"){
+    // DataGanjil = JSON.parse(localStorage.getiItem("DataGanjil"));
+    WorkNo.value = "Data Ganjil"
+  }else{
+    DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
+    var shift = JSON.parse(localStorage.getItem("shift"));
+    // console.log(DataGenap);
+    DataGenap.forEach(element => {
+      if(Type.value == "IN"){
+        DataGenap[i].Line = "A"
+        localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+      }else if(Type.value == "EX"){
+        DataGenap[i].Line = "B"
+        localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+      }else if(Type.value == "HI"){
+        DataGenap[i].Line = "C"
+        localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+      }else if(Type.value == "HX"){
+        DataGenap[i].Line = "D"
+        localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+      }
 
+      // if(shift == "R"){
+        // DataGenap[i].Shift = "RED"
+      //   localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+      // }else {
+      //   DataGenap[i].Shift = "WHITE"
+      //   localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+      // }
 
-    // WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment;
-
-  })
+      DataGenap[i].Status = true;
+      localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+    
+      if(Number(element.Increment) == indeksSekarang){
+        WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+      }
+    });
+  }
+  // i++;
 }
 
 // Mengambil Tanggal & Tahun & Waktu
@@ -264,14 +291,6 @@ const TotalOut = computed(() => {
 })
 
 
-// const deleteData = (value) => {
-//   DataWork.DataList = DataWork.DataList.filter((item, index) => {
-//     if (index != value) {
-//       return item;
-//     }
-//   });
-//   localStorage.setItem("DataWork.DataList", JSON.stringify(DataWork.DataList));
-// };
 
 const Total = computed(() => {
   return DataWork.DataList.length;
@@ -285,17 +304,23 @@ const DataWork = reactive({
 // Methods Insert Data LocalStorage
 const add = (index) => {
   // if (index == "REGULER")
-  DataWork.DataList.unshift({
-    No: CountNumber.value + 1,
-    WorkNo: WorkNo.value,
-    PartCode: PartCode.value,
-    Type: route.params.id,
-    Line: Line.value,
-    date: date.value,
-    Time: Time.value,
-    Shift: JSON.parse(localStorage.getItem("shift")),
-    simpan: (simpan.value = true),
-  });
-  localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+  if(route.params.id === "IN"){
+    if(index == "REGULER"){
+      Type.value = "IN"
+      console.log(Type.value);
+    }else{
+      Type.value = "HI"
+      console.log(Type.value);
+    } 
+  }else if(route.params.id === "EX"){
+    if(index == "REGULER"){
+      Type.value = "EX"
+      console.log(Type.value);
+    }else {
+      Type.value = "HX"
+      console.log(Type.value);
+    }
+  }
+  console.log(Type.value);
 };
 </script>
