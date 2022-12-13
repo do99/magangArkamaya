@@ -51,7 +51,7 @@
                       MANUAL
                     </button>
                     <button
-                      @click="simpan"
+                      @click="next"
                       class="bg-green-500 rounded-r-md py-2 px-5 hover:bg-green-900 active:scale-90 drop-shadow-xl"
                     >
                       NEXT
@@ -266,7 +266,20 @@ const AddLine = () => {
       }
     });
   }
-  // i++;
+}
+
+const next = () => {
+  indeksSekarang += 2;
+  i += 1;
+
+  DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
+
+  DataGenap.forEach(element => {
+    if(Number(element.Increment) == indeksSekarang){
+        WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+      }
+  })
+
 }
 
 // Mengambil Tanggal & Tahun & Waktu
