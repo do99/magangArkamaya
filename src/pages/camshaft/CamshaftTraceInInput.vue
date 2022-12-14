@@ -294,67 +294,80 @@ const next = () => {
   indeksSekarangGenap += 2;
   i += 1;
   var shift = JSON.parse(localStorage.getItem("shift"));
+  DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
 
   if(shift === "R"){
     shift = "RED";
   }else{
     shift = "WHITE";
   }
+var data = 0;
+  // console.log(DataWork.DataList.WorkNo);
+  DataWork.DataList.forEach(element => {
+    if(WorkNo.value === element.WorkNo){
+      data = data + 1;
+    }
+  })
+    if(data > 0){
+      alert("Data Sudah Ada");
+    }else if(data < 1){
+      
+          if(route.params.id === "IN"){
+            DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
 
-  if(route.params.id === "IN"){
-    DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
+            getDate()
+            DataWork.DataList.push({
+              No: No.value,
+              WorkNo: WorkNo.value,
+              PartCode: PartCode.value,
+              Type: Type.value,
+              Line: DataGanjil[i].Line,
+              Date: date.value,
+              Time: Time.value,
+              Shift: shift
+            })
+            localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+            console.log(PartCode.value);
+            DataGanjil.forEach(element => {
+              if(Number(element.Increment) == indeksSekarangGanjil){
+                DataGanjil[i].Line = DataGanjil[i-1].Line;
+                DataGanjil[i].Shift = DataGanjil[i-1].Shift;
+                DataGanjil[i].status = true;
+                localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+                WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+              }
+            })
 
-    getDate()
-    DataWork.DataList.push({
-      No: No.value,
-      WorkNo: WorkNo.value,
-      PartCode: PartCode.value,
-      Type: Type.value,
-      Line: DataGanjil[i].Line,
-      Date: date.value,
-      Time: Time.value,
-      Shift: shift
-    })
-    localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
-    console.log(PartCode.value);
-    DataGanjil.forEach(element => {
-      if(Number(element.Increment) == indeksSekarangGanjil){
-        DataGanjil[i].Line = DataGanjil[i-1].Line;
-        DataGanjil[i].Shift = DataGanjil[i-1].Shift;
-        DataGanjil[i].status = true;
-        localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
-        WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
-      }
-    })
+          }else {
+            DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
+            getDate()
+            DataWork.DataList.push({
+              No: No.value,
+              WorkNo: WorkNo.value,
+              PartCode: PartCode.value,
+              Type: Type.value,
+              Line: DataGenap[i].Line,
+              Date: date.value,
+              Time: Time.value,
+              Shift: shift
+            })
+            localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+            console.log(PartCode.value);
+            DataGenap.forEach(element => {
+              if(Number(element.Increment) == indeksSekarangGenap){
+                  DataGenap[i].Line = DataGenap[i-1].Line;
+                  DataGenap[i].Shift = DataGenap[i-1].Shift;
+                  DataGenap[i].status = true;
+                  localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+                  WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+                }
+            })
 
-  }else {
-    DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
-    getDate()
-    DataWork.DataList.push({
-      No: No.value,
-      WorkNo: WorkNo.value,
-      PartCode: PartCode.value,
-      Type: Type.value,
-      Line: DataGenap[i].Line,
-      Date: date.value,
-      Time: Time.value,
-      Shift: shift
-    })
-    localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
-    console.log(PartCode.value);
-    DataGenap.forEach(element => {
-      if(Number(element.Increment) == indeksSekarangGenap){
-          DataGenap[i].Line = DataGenap[i-1].Line;
-          DataGenap[i].Shift = DataGenap[i-1].Shift;
-          DataGenap[i].status = true;
-          localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
-          WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
-        }
-    })
-
-    
-  }
-
+            
+          }
+          alert("Data Tersimpan");
+    }
+  
 }
 
 // Mengambil Tanggal & Tahun & Waktu

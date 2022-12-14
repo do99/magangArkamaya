@@ -74,30 +74,15 @@ const DataWork = reactive({
   DataList: [],
 });
 
-onMounted(() => {
-  DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
-});
-
-const CountNumber = computed(() => {
-  return DataWork.DataList.length;
-});
-
-const Total = computed(() => {
-  return DataWork.DataList.length;
-});
-
-const TotalOut = computed(() => {
-  jumlahBarang.value = DataWork.DataList.length;
-  let hasil = (jumlahBarang.value / percentage.value) * 100;
-  return hasil.toFixed(1);
-})
-
+// onMounted(() => {
+//   DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
+// });
 const DataGenerate = reactive({
   list: []
 })
 
 onMounted((index) => {
-  for(var i =1; i<=10; i++){
+  for(var i =1; i<=281; i++){
     DataGenerate.list.push({
       Index: i,
       Years: yearsToChar(years),
@@ -116,7 +101,6 @@ const filter = (index) => {
   DataAwal.listData = JSON.parse(localStorage.getItem("DataGenerate.list"));
 
   if(index === 'Ganjil'){
-    console.log("Ganjil");
 
     if(DataGanjil.listData.length == 0){
         
