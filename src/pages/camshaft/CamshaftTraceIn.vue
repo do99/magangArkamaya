@@ -9,6 +9,7 @@ let hasilpercen = ref()
 let jumlahBarang = ref()
 let percentage = ref(281); 
 
+const TitleHeader = ref("TraceIn");
 var date = new Date();
 var years = date.getFullYear();
 var month = date.getMonth()+1;
@@ -154,7 +155,7 @@ const filter = (index) => {
 
 </script>
 <template class="overflow-y-auto">
-  <Header />
+  <Header :TitleHeader="TitleHeader"/>
   <body id="body" class="overflow-hidden">
     <div class="flex flex-col">
       <div class="relative px-2">
