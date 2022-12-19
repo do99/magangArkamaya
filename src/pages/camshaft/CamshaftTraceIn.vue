@@ -53,7 +53,6 @@ const dayToChar = (hari) => {
     return day;
 }
 
-
 const DataGanjil = reactive({
   listData: []
 })
@@ -74,15 +73,16 @@ const DataWork = reactive({
   DataList: [],
 });
 
-// onMounted(() => {
-//   DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
-// });
+onMounted(() => {
+  DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
+});
+
 const DataGenerate = reactive({
   list: []
 })
 
 onMounted((index) => {
-  for(var i =1; i<=281; i++){
+  for(var i =1; i<=10; i++){
     DataGenerate.list.push({
       Index: i,
       Years: yearsToChar(years),
@@ -134,7 +134,15 @@ const filter = (index) => {
     }
   }
 
+const TotalOut = computed(() => {
+  jumlahBarang.value = DataWork.DataList.length;
+  let hasil = (jumlahBarang.value / percentage.value) * 100;
+  return hasil.toFixed(1);
+})
 
+const Total = computed(() => {
+  return DataWork.DataList.length;
+});
 
 
 </script>

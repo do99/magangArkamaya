@@ -182,6 +182,9 @@
     </div> -->
 
   </body>
+  <button @click="deleteData(0)" class="bg-red-500 text-white p-5 ml-[600px] w-20">
+    Delete
+  </button>
 </template>
 
 <script setup>
@@ -191,9 +194,7 @@ import { useRoute } from "vue-router";
 import { ref, reactive, onMounted, computed } from "vue";
 
 let percentage = ref(281); // Variable Dengan Nilai Awal Percentage Progress Bar
-
 const route = useRoute();
-
 const TitleHeader = ref("TraceIn");
 
 // Variable Untuk Insert Data LocalStorage
@@ -223,7 +224,6 @@ onMounted(() => {
     setInterval(getDate, 1000);
   });
 });
-
 
 var i  = 0;
 var indeksSekarangGenap = 2;
@@ -302,7 +302,7 @@ const next = () => {
     shift = "WHITE";
   }
 var data = 0;
-  // console.log(DataWork.DataList.WorkNo);
+  console.log(DataWork.DataList.WorkNo);
   DataWork.DataList.forEach(element => {
     if(WorkNo.value === element.WorkNo){
       data = data + 1;
@@ -311,12 +311,12 @@ var data = 0;
     if(data > 0){
       alert("Data Sudah Ada");
     }else if(data < 1){
-      
+       
           if(route.params.id === "IN"){
             DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
-
+            No.value = DataWork.DataList.length + 1;
             getDate()
-            DataWork.DataList.push({
+            DataWork.DataList.unshift({
               No: No.value,
               WorkNo: WorkNo.value,
               PartCode: PartCode.value,
@@ -337,7 +337,6 @@ var data = 0;
                 WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
               }
             })
-
           }else {
             DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
             getDate()
@@ -366,8 +365,7 @@ var data = 0;
             
           }
           alert("Data Tersimpan");
-    }
-  
+    } 
 }
 
 // Mengambil Tanggal & Tahun & Waktu
@@ -390,8 +388,6 @@ const TotalOut = computed(() => {
   let hasil = (jumlahBarang.value / percentage.value) * 100;
   return hasil.toFixed(1);
 })
-
-
 
 const Total = computed(() => {
   return DataWork.DataList.length;
@@ -424,4 +420,14 @@ const add = (index) => {
   }
   console.log(Type.value);
 };
+
+const deleteData = (value) => {
+  DataWork.DataList = DataWork.DataList.filter((item, index) => {
+      if(index != value) {
+          return item
+      }
+  });
+  localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+}
+
 </script>
