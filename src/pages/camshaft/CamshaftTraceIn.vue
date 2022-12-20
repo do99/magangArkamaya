@@ -9,6 +9,7 @@ let hasilpercen = ref()
 let jumlahBarang = ref()
 let percentage = ref(281); 
 
+const TitleHeader = ref("TraceIn");
 var date = new Date();
 var years = date.getFullYear();
 var month = date.getMonth()+1;
@@ -52,7 +53,6 @@ const dayToChar = (hari) => {
     return day;
 }
 
-
 const DataGanjil = reactive({
   listData: []
 })
@@ -76,20 +76,6 @@ const DataWork = reactive({
 onMounted(() => {
   DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
 });
-
-const CountNumber = computed(() => {
-  return DataWork.DataList.length;
-});
-
-const Total = computed(() => {
-  return DataWork.DataList.length;
-});
-
-const TotalOut = computed(() => {
-  jumlahBarang.value = DataWork.DataList.length;
-  let hasil = (jumlahBarang.value / percentage.value) * 100;
-  return hasil.toFixed(1);
-})
 
 const DataGenerate = reactive({
   list: []
@@ -115,7 +101,6 @@ const filter = (index) => {
   DataAwal.listData = JSON.parse(localStorage.getItem("DataGenerate.list"));
 
   if(index === 'Ganjil'){
-    console.log("Ganjil");
 
     if(DataGanjil.listData.length == 0){
         
@@ -149,12 +134,20 @@ const filter = (index) => {
     }
   }
 
+const TotalOut = computed(() => {
+  jumlahBarang.value = DataWork.DataList.length;
+  let hasil = (jumlahBarang.value / percentage.value) * 100;
+  return hasil.toFixed(1);
+})
 
+const Total = computed(() => {
+  return DataWork.DataList.length;
+});
 
 
 </script>
 <template class="overflow-y-auto">
-  <Header />
+  <Header :TitleHeader="TitleHeader"/>
   <body id="body" class="overflow-hidden">
     <div class="flex flex-col">
       <div class="relative px-2">

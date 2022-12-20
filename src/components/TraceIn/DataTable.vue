@@ -85,7 +85,7 @@ const columns = [
   },
   {
     title: "Date",
-    key: "date",
+    key: "Date",
     width: 150,
   },
   {

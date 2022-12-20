@@ -1,5 +1,5 @@
 <template class="overflow-y-auto">
-  <Header />
+  <Header :TitleHeader="TitleHeader"/>
   <body id="body" class="overflow-hidden">
     <div class="flex flex-col">
       <div class="relative px-2">
@@ -182,6 +182,9 @@
     </div> -->
 
   </body>
+  <button @click="deleteData(0)" class="bg-red-500 text-white p-5 ml-[600px] w-20">
+    Delete
+  </button>
 </template>
 
 <script setup>
@@ -191,20 +194,19 @@ import { useRoute } from "vue-router";
 import { ref, reactive, onMounted, computed } from "vue";
 
 let percentage = ref(281); // Variable Dengan Nilai Awal Percentage Progress Bar
-
 const route = useRoute();
+const TitleHeader = ref("TraceIn");
 
 // Variable Untuk Insert Data LocalStorage
 let No = ref(0);
 let WorkNo = ref();
 let Type = ref();
 let PartCode = ref("CA");
-let Line = ref("A");
+let Shift = ref();
+let Line = ref();
 let date = ref();
 let Time = ref();
-let Shift = ref();
 let jumlahBarang = ref();
-const simpan = ref(false);
 let GenerateData = reactive({
   list: []
 })
@@ -222,7 +224,6 @@ onMounted(() => {
     setInterval(getDate, 1000);
   });
 });
-
 
 var i  = 0;
 var indeksSekarangGenap = 2;
@@ -289,50 +290,82 @@ const AddLine = () => {
 }
 
 const next = () => {
+  indeksSekarangGanjil += 2;
   indeksSekarangGenap += 2;
   i += 1;
   var shift = JSON.parse(localStorage.getItem("shift"));
+  DataWork.DataList = JSON.parse(localStorage.getItem("DataWork"));
 
-  if(route.params.id === "IN"){
-    // DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
-    // DataGanjil.forEach(element => {
-    //   DataGanjil[i].Line = DataGenap[i-1].Line;
-    // })
-
-  }else {
-    DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
-
-    if(shift === "R"){
-      shift = "RED";
-    }else{
-      shift = "WHITE";
-    }
-
-    DataWork.DataList.push({
-      No: No.value,
-      WorkNo: WorkNo.value,
-      PartCode: PartCode.value,
-      Type: Type.value,
-      Line: DataGenap[i].Line,
-      Date: getDate,
-      Time: Time.value,
-      Shift: shift
-    })
-    localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
-
-    DataGenap.forEach(element => {
-      if(Number(element.Increment) == indeksSekarangGenap){
-          DataGenap[i].Line = DataGenap[i-1].Line;
-          DataGenap[i].Shift = DataGenap[i-1].Shift;
-          DataGenap[i].status = true;
-          localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
-          WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
-        }
-    })
-
-    
+  if(shift === "R"){
+    shift = "RED";
+  }else{
+    shift = "WHITE";
   }
+var data = 0;
+  console.log(DataWork.DataList.WorkNo);
+  DataWork.DataList.forEach(element => {
+    if(WorkNo.value === element.WorkNo){
+      data = data + 1;
+    }
+  })
+    if(data > 0){
+      alert("Data Sudah Ada");
+    }else if(data < 1){
+       
+          if(route.params.id === "IN"){
+            DataGanjil = JSON.parse(localStorage.getItem("DataGanjil"));
+            No.value = DataWork.DataList.length + 1;
+            getDate()
+            DataWork.DataList.unshift({
+              No: No.value,
+              WorkNo: WorkNo.value,
+              PartCode: PartCode.value,
+              Type: Type.value,
+              Line: DataGanjil[i].Line,
+              Date: date.value,
+              Time: Time.value,
+              Shift: shift
+            })
+            localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+            console.log(PartCode.value);
+            DataGanjil.forEach(element => {
+              if(Number(element.Increment) == indeksSekarangGanjil){
+                DataGanjil[i].Line = DataGanjil[i-1].Line;
+                DataGanjil[i].Shift = DataGanjil[i-1].Shift;
+                DataGanjil[i].status = true;
+                localStorage.setItem("DataGanjil", JSON.stringify(DataGanjil));
+                WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+              }
+            })
+          }else {
+            DataGenap = JSON.parse(localStorage.getItem("DataGenap"));
+            getDate()
+            DataWork.DataList.push({
+              No: No.value,
+              WorkNo: WorkNo.value,
+              PartCode: PartCode.value,
+              Type: Type.value,
+              Line: DataGenap[i].Line,
+              Date: date.value,
+              Time: Time.value,
+              Shift: shift
+            })
+            localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+            console.log(PartCode.value);
+            DataGenap.forEach(element => {
+              if(Number(element.Increment) == indeksSekarangGenap){
+                  DataGenap[i].Line = DataGenap[i-1].Line;
+                  DataGenap[i].Shift = DataGenap[i-1].Shift;
+                  DataGenap[i].status = true;
+                  localStorage.setItem("DataGenap", JSON.stringify(DataGenap));
+                  WorkNo.value = element.Years + element.Line + element.Day + element.Month + element.Shift + element.Increment
+                }
+            })
 
+            
+          }
+          alert("Data Tersimpan");
+    } 
 }
 
 // Mengambil Tanggal & Tahun & Waktu
@@ -355,8 +388,6 @@ const TotalOut = computed(() => {
   let hasil = (jumlahBarang.value / percentage.value) * 100;
   return hasil.toFixed(1);
 })
-
-
 
 const Total = computed(() => {
   return DataWork.DataList.length;
@@ -389,4 +420,14 @@ const add = (index) => {
   }
   console.log(Type.value);
 };
+
+const deleteData = (value) => {
+  DataWork.DataList = DataWork.DataList.filter((item, index) => {
+      if(index != value) {
+          return item
+      }
+  });
+  localStorage.setItem("DataWork", JSON.stringify(DataWork.DataList));
+}
+
 </script>
